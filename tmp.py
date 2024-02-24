@@ -4,14 +4,14 @@ import json
 from util import give_me_text_from_graph
 import uuid
 import os
-
+import pandas as pd
 
 datafile = "data.json"
 
 
 def read_file():
     if not os.path.exists(datafile):
-        return []
+        return {}
     with open(datafile, "r") as file:
         data = json.loads(file.read())
     return data
@@ -33,19 +33,27 @@ st.title("My To-Do List")
 uploaded_file = st.file_uploader("Choose a file")
 
 
-def create_bullet_journal_container(date, tasks):
-    with st.container():
-        # Create two columns, one small for the date, one larger for the tasks
-        col1, col2 = st.columns([1, 4])
-        with col1:
-            # Display the date in the first column
-            st.markdown(f"#### {date}")
-        with col2:
-            # Create a box-like container for tasks
-            st.markdown("##### Tasks")
-            for task in tasks:
-                # Create a checkbox for each task
-                st.checkbox(task)
+def create_bullet_journal_container(data):
+    # combine df
+    final_df = None
+    count = 0
+    for k, v in data.items():
+        tasks = v.get("tasks")
+        date = v.get("date")
+        df = pd.DataFrame(
+            {
+                "Date": [date] * len(tasks),
+                "Tasks": tasks,
+                # "image": [v.get("image")] * len(tasks),
+                "Order": range(count + 1, count + len(tasks) + 1),
+            }
+        )
+        count += len(tasks)
+        if final_df is None:
+            final_df = df
+        else:
+            final_df = pd.concat([final_df, df], ignore_index=True)
+    st.data_editor(final_df)
 
 
 if uploaded_file is not None:
@@ -63,6 +71,8 @@ if uploaded_file is not None:
     output = give_me_text_from_graph(f"{uiud}.jpeg")
     print(output)
     output_json = json.loads(output)
-    data.append(output_json)
+    output_json["image"] = f"{uiud}.jpeg"
+    date = output_json.get("date")
+    data[date] = output_json
     write_file(json.dumps(data))
-    create_bullet_journal_container(output_json.get("date"), output_json.get("tasks"))
+    create_bullet_journal_container(data)
