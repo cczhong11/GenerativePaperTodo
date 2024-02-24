@@ -2,6 +2,28 @@ from io import StringIO
 import streamlit as st
 import json
 from util import give_me_text_from_graph
+import uuid
+import os
+
+
+datafile = "data.json"
+
+
+def read_file():
+    if not os.path.exists(datafile):
+        return []
+    with open(datafile, "r") as file:
+        data = json.loads(file.read())
+    return data
+
+
+data = read_file()
+
+
+def write_file(data):
+    with open(datafile, "w") as file:
+        file.write(data)
+
 
 # Title of the app
 st.title("My To-Do List")
@@ -28,15 +50,19 @@ def create_bullet_journal_container(date, tasks):
 
 if uploaded_file is not None:
     # To read file as bytes:
+
     bytes_data = uploaded_file.getvalue()
     st.write("Uploaded file is now stored as bytes.")
 
     # Can use any file handling or processing here
     # For example, saving the file
-    with open("myfile.jpeg", "wb") as f:
+    uiud = uuid.uuid4()
+    with open(f"{uiud}.jpeg", "wb") as f:
         f.write(bytes_data)
     st.success("File saved!")
-    output = give_me_text_from_graph("myfile.jpeg")
+    output = give_me_text_from_graph(f"{uiud}.jpeg")
     print(output)
     output_json = json.loads(output)
+    data.append(output_json)
+    write_file(json.dumps(data))
     create_bullet_journal_container(output_json.get("date"), output_json.get("tasks"))

@@ -1,12 +1,23 @@
 from openai import OpenAI
 import base64
+from PIL import Image
+import io
 
 client = OpenAI()
 
 
 def encode_image(image_path):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode("utf-8")
+    image = Image.open(image_path)
+    height, width = image.size
+    new_image = image.resize((height // 10, width // 10))
+    buffered = io.BytesIO()
+    # print(type(new_image))
+
+    new_image.save(buffered, format="JPEG")
+
+    # Encode the image to base64
+    img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    return img_str
 
 
 def give_me_text_from_graph(filename):
