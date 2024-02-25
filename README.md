@@ -10,6 +10,11 @@ Welcome to GenerativePaperTodo, where your paper to-do lists transform into inte
 ![image](https://github.com/cczhong11/GenerativePaperTodo/assets/7358252/3cf8caea-ecfb-4c5b-ae89-65fa20b9bbcd)
 
 
+
+https://github.com/cczhong11/GenerativePaperTodo/assets/7358252/0eef6f81-c23d-4e54-9fc0-0b78280cea8a
+
+
+
 ## Features
 
 - **Image Upload**: Convert your paper to-do lists into digital tasks with just a photo.
