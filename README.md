@@ -3,6 +3,8 @@
 
 Welcome to GenerativePaperTodo, where your paper to-do lists transform into interactive, digital checklists! With the magic of image processing and AI, simply upload a photo of your handwritten tasks, and voilà, you've got a digital to-do list you can access and edit from anywhere. Plus, our integration with ChatGPT allows you to add tasks through natural conversation - making task management more intuitive and fun!
 
+[Demo](https://docs.google.com/presentation/d/1-IUP4vKjOALC00ZWPej4JTrB18JT8iNN4hJggcaRaZg/edit?usp=sharing)
+
 ## Features
 
 - **Image Upload**: Convert your paper to-do lists into digital tasks with just a photo.
