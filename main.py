@@ -1,7 +1,7 @@
 from io import StringIO
 import streamlit as st
 import json
-from util import combine_to_json_gpt, give_me_text_from_graph
+from util import answer_question, call_gpt, combine_to_json_gpt, give_me_text_from_graph
 import uuid
 import os
 import pandas as pd
@@ -80,12 +80,7 @@ def create_bullet_journal_container(data):
 def process_uploaded_file(uploaded_file):
 
     if uploaded_file is not None:
-        print(uploaded_file.name)
-        print(img_set)
-        if uploaded_file.name in img_set:
-            return data
-        # To read file as bytes:
-        img_set.add(uploaded_file.name)
+
         bytes_data = uploaded_file.getvalue()
         st.write("Uploaded file is now stored as bytes.")
 
@@ -118,7 +113,6 @@ if new_data:
 create_bullet_journal_container(data)
 
 
-"""
 # 初始化Session State来存储聊天消息
 if "chat_message" not in st.session_state:
     st.session_state.chat_message = ""
@@ -131,12 +125,24 @@ if "messages" not in st.session_state:
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-
+if st.button("✨ when free?"):
+    p = "based on the todo list in json, when I am free this week? do not mention the JSON in the answer. "
+    st.session_state.messages.append(
+        {
+            "role": "user",
+            "content": p,
+        }
+    )
+    with st.chat_message("bot"):
+        mesg = answer_question(data, p)
+        st.markdown(mesg)
 # Accept user input
 if prompt := st.chat_input("What is up?"):
     # Display user message in chat message container
     with st.chat_message("user"):
         st.markdown(prompt)
     # Add user message to chat history
+    with st.chat_message("bot"):
+        mesg = answer_question(data, prompt)
+        st.markdown(mesg)
     st.session_state.messages.append({"role": "user", "content": prompt})
-"""
