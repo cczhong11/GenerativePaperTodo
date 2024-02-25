@@ -86,10 +86,11 @@ def process_uploaded_file(uploaded_file):
 
         # Can use any file handling or processing here
         # For example, saving the file
-        img_name = uploaded_file.name
-        if os.path.exists(img_name):
-            return data
-        uiud = img_name.split(".")[0]
+        # img_name = uploaded_file.name
+        # if os.path.exists(img_name):
+        #    return data
+        # uiud = img_name.split(".")[0]
+        uiud = uuid.uuid4()
         with open(f"{uiud}.jpeg", "wb") as f:
             f.write(bytes_data)
         st.success("File saved!")
@@ -103,8 +104,10 @@ def process_uploaded_file(uploaded_file):
         else:
             old_data = data[date]
         new_data = output_json
-        new_data = combine_to_json_gpt(old_data, new_data)
+        if old_data:
+            new_data = combine_to_json_gpt(old_data, new_data)
         data[date] = new_data
+
         write_file(json.dumps(data))
         return data
     return data
