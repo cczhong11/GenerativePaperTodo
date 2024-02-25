@@ -86,7 +86,10 @@ def process_uploaded_file(uploaded_file):
 
         # Can use any file handling or processing here
         # For example, saving the file
-        uiud = uuid.uuid4()
+        img_name = uploaded_file.name
+        if os.path.exists(img_name):
+            return data
+        uiud = img_name.split(".")[0]
         with open(f"{uiud}.jpeg", "wb") as f:
             f.write(bytes_data)
         st.success("File saved!")

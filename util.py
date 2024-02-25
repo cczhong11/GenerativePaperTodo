@@ -49,7 +49,7 @@ def give_me_text_from_graph(filename):
                 "content": [
                     {
                         "type": "text",
-                        "text": "give me a json with date and list of tasks from this image. json has two fields: date and tasks. date is a string (MM/DD) and tasks is a list of strings. the image is a bullet journal page. only return actual json. do not return any other text. if you saw the `jpeg` in the line, please also add it to the same line of the task, not add a new item.",
+                        "text": "give me a json with date and list of tasks from this image. json has two fields: date and tasks. date is a string (MM/DD) and tasks is a list of strings. the image is a bullet journal page. only return actual json. do not return any other text. if you saw the `jpeg` in the line, please also add it to the same line of the task, not add a new item. There is index in the beginning of task, please also include it.",
                     },
                     {
                         "type": "image_url",
@@ -89,7 +89,13 @@ def call_gpt(prompt):
 
 
 def combine_to_json_gpt(old_json, new_json):
-    prompt = f"combine the following two jsons into one. {old_json} and {new_json}. if have the same index, update it with the new value. if not, add it to the list. return the combined json."
+    # prompt = f"combine the following two jsons into one. {old_json} and {new_json}. if have the same index, update it with the new value. if not, add it to the list. return the combined json."
+    prompt = f"""combine the following two jsons into one. old: {old_json} and new: {new_json}. For each date, look at each task's bullet if the number already exists, update the task with the new text value. If the bullet number doesn't exist, add it to the list. return the combined json.
+    for example:
+    old: 1. AGI House Hack + tesla.jpeg
+    new: 1. AGI House Hack 
+    return: 1. AGI House Hack 
+    """
     response = call_gpt(prompt)
     return get_json(response)
 
