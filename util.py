@@ -7,6 +7,17 @@ import io
 client = OpenAI()
 
 
+def get_json(data):
+    try:
+        return json.loads(data)
+    except:
+        # find first {
+        start = data.find("{")
+        end = data.rfind("}")
+        print(data[start : end + 1])
+        return json.loads(data[start : end + 1])
+
+
 def encode_image(image_path):
     image = Image.open(image_path)
     # turn image to bw
@@ -50,12 +61,11 @@ def give_me_text_from_graph(filename):
         max_tokens=300,
     )
     result = response.choices[0].message.content
-    result = result.replace("```json", "")
-    result = result.replace("```", "")
-    return result
+
+    return get_json(result)
 
 
-def combine_to_json_gpt(old_json, new_json):
+def call_gpt(prompt):
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -64,15 +74,28 @@ def combine_to_json_gpt(old_json, new_json):
                 "content": [
                     {
                         "type": "text",
-                        "text": f"combine the following two jsons into one. {old_json} and {new_json}. if have the same index, update it with the new value. if not, add it to the list. return the combined json.",
+                        "text": prompt,
                     }
                 ],
             }
         ],
         max_tokens=300,
     )
-    output = response.choices[0].message.content
-    return json.loads(output)
+    result = response.choices[0].message.content
+
+    return result
+
+
+def combine_to_json_gpt(old_json, new_json):
+    prompt = f"combine the following two jsons into one. {old_json} and {new_json}. if have the same index, update it with the new value. if not, add it to the list. return the combined json."
+    response = call_gpt(prompt)
+    return get_json(response)
+
+
+def answer_question(old_json, question):
+    prompt = f"Here is the current my todo JSON: {old_json}. please help me answer the following question: {question}."
+    response = call_gpt(prompt)
+    return response
 
 
 def combine_to_json(old_json, new_json):
@@ -80,10 +103,5 @@ def combine_to_json(old_json, new_json):
     return old_json
 
 
-print(
-    combine_to_json_gpt(
-        {"date": "01/01", "tasks": ["1. write code", "2. write project"]},
-        {"date": "01/01", "tasks": ["1. write code 2"]},
-    )
-)
 # print(give_me_text_from_graph("myfile.jpg"))
+print(get_json('hello world {"a":1}'))

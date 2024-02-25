@@ -90,5 +90,27 @@ def process_uploaded_file(uploaded_file):
 
 new_data = process_uploaded_file(uploaded_file)
 if new_data:
-    data = new_data  # 如果有新数据，更新data变量
+    data = new_data
 create_bullet_journal_container(data)
+import streamlit as st
+
+# 初始化Session State来存储聊天消息
+if "chat_message" not in st.session_state:
+    st.session_state.chat_message = ""
+
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Accept user input
+if prompt := st.chat_input("What is up?"):
+    # Display user message in chat message container
+    with st.chat_message("user"):
+        st.markdown(prompt)
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
