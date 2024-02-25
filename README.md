@@ -32,6 +32,14 @@ streamlit run main.py
 
 Navigate to `http://localhost:8501` in your browser, and you're ready to digitize your paper to-do lists!
 
+
+You also need to start a local http server.
+
+```
+python3 -m http.server
+
+```
+
 ## How to Use
 
 1. **Upload Your Paper To-Do List**: Click the 'Upload' button and select an image of your handwritten to-do list.
