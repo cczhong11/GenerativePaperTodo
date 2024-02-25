@@ -1,7 +1,7 @@
 from io import StringIO
 import streamlit as st
 import json
-from util import give_me_text_from_graph
+from util import combine_to_json_gpt, give_me_text_from_graph
 import uuid
 import os
 import pandas as pd
@@ -57,26 +57,38 @@ def create_bullet_journal_container(data):
         final_df,
         column_config={"image": st.column_config.ImageColumn()},
         hide_index=True,
+        num_rows="dynamic",
     )
 
 
-if uploaded_file is not None:
-    # To read file as bytes:
+def process_uploaded_file(uploaded_file):
+    if uploaded_file is not None:
+        # To read file as bytes:
 
-    bytes_data = uploaded_file.getvalue()
-    st.write("Uploaded file is now stored as bytes.")
+        bytes_data = uploaded_file.getvalue()
+        st.write("Uploaded file is now stored as bytes.")
 
-    # Can use any file handling or processing here
-    # For example, saving the file
-    uiud = uuid.uuid4()
-    with open(f"{uiud}.jpeg", "wb") as f:
-        f.write(bytes_data)
-    st.success("File saved!")
-    output = give_me_text_from_graph(f"{uiud}.jpeg")
-    print(output)
-    output_json = json.loads(output)
-    output_json["image"] = f"{uiud}.jpeg"
-    date = output_json.get("date")
-    data[date] = output_json
-    write_file(json.dumps(data))
-    create_bullet_journal_container(data)
+        # Can use any file handling or processing here
+        # For example, saving the file
+        uiud = uuid.uuid4()
+        with open(f"{uiud}.jpeg", "wb") as f:
+            f.write(bytes_data)
+        st.success("File saved!")
+        output = give_me_text_from_graph(f"{uiud}.jpeg")
+        print(output)
+        output_json = json.loads(output)
+        output_json["image"] = f"{uiud}.jpeg"
+        date = output_json.get("date")
+        old_data = data[date]
+        new_data = output_json
+        new_data = combine_to_json_gpt(old_data, new_data)
+        data[date] = new_data
+        write_file(json.dumps(data))
+        return data
+    return data
+
+
+new_data = process_uploaded_file(uploaded_file)
+if new_data:
+    data = new_data  # 如果有新数据，更新data变量
+create_bullet_journal_container(data)

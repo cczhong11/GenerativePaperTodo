@@ -1,3 +1,4 @@
+import json
 from openai import OpenAI
 import base64
 from PIL import Image, ImageEnhance
@@ -54,4 +55,35 @@ def give_me_text_from_graph(filename):
     return result
 
 
+def combine_to_json_gpt(old_json, new_json):
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": f"combine the following two jsons into one. {old_json} and {new_json}. if have the same index, update it with the new value. if not, add it to the list. return the combined json.",
+                    }
+                ],
+            }
+        ],
+        max_tokens=300,
+    )
+    output = response.choices[0].message.content
+    return json.loads(output)
+
+
+def combine_to_json(old_json, new_json):
+    old_json.update(new_json)
+    return old_json
+
+
+print(
+    combine_to_json_gpt(
+        {"date": "01/01", "tasks": ["1. write code", "2. write project"]},
+        {"date": "01/01", "tasks": ["1. write code 2"]},
+    )
+)
 # print(give_me_text_from_graph("myfile.jpg"))
