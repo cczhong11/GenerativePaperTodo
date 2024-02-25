@@ -5,6 +5,9 @@ Welcome to GenerativePaperTodo, where your paper to-do lists transform into inte
 
 [Demo](https://docs.google.com/presentation/d/1-IUP4vKjOALC00ZWPej4JTrB18JT8iNN4hJggcaRaZg/edit?usp=sharing)
 
+![image](https://github.com/cczhong11/GenerativePaperTodo/assets/7358252/d892acf7-04ab-4cad-a96c-db135985b0ee)
+
+
 ![image](https://github.com/cczhong11/GenerativePaperTodo/assets/7358252/76bf6326-8bb4-4460-8a85-a63d5d6d5683)
 
 ![image](https://github.com/cczhong11/GenerativePaperTodo/assets/7358252/3cf8caea-ecfb-4c5b-ae89-65fa20b9bbcd)
