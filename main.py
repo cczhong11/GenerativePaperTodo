@@ -6,6 +6,7 @@ import uuid
 import os
 import pandas as pd
 
+
 datafile = "data.json"
 
 
@@ -77,9 +78,14 @@ def create_bullet_journal_container(data):
 
 
 def process_uploaded_file(uploaded_file):
-    if uploaded_file is not None:
-        # To read file as bytes:
 
+    if uploaded_file is not None:
+        print(uploaded_file.name)
+        print(img_set)
+        if uploaded_file.name in img_set:
+            return data
+        # To read file as bytes:
+        img_set.add(uploaded_file.name)
         bytes_data = uploaded_file.getvalue()
         st.write("Uploaded file is now stored as bytes.")
 
@@ -110,8 +116,9 @@ new_data = process_uploaded_file(uploaded_file)
 if new_data:
     data = new_data
 create_bullet_journal_container(data)
-import streamlit as st
 
+
+"""
 # 初始化Session State来存储聊天消息
 if "chat_message" not in st.session_state:
     st.session_state.chat_message = ""
@@ -132,3 +139,4 @@ if prompt := st.chat_input("What is up?"):
         st.markdown(prompt)
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
+"""

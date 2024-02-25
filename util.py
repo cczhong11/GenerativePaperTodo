@@ -49,7 +49,7 @@ def give_me_text_from_graph(filename):
                 "content": [
                     {
                         "type": "text",
-                        "text": "give me a json with date and list of tasks from this image. json has two fields: date and tasks. date is a string (MM/DD) and tasks is a list of strings. the image is a bullet journal page. only return actual json. do not return any other text.",
+                        "text": "give me a json with date and list of tasks from this image. json has two fields: date and tasks. date is a string (MM/DD) and tasks is a list of strings. the image is a bullet journal page. only return actual json. do not return any other text. if you saw the `jpeg` in the line, please also add it to the same line of the task, not add a new item.",
                     },
                     {
                         "type": "image_url",
@@ -103,7 +103,3 @@ def answer_question(old_json, question):
 def combine_to_json(old_json, new_json):
     old_json.update(new_json)
     return old_json
-
-
-# print(give_me_text_from_graph("myfile.jpg"))
-print(get_json('hello world {"a":1}'))
