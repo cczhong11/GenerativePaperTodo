@@ -44,7 +44,7 @@ def create_bullet_journal_container(data):
             {
                 "Date": [date] * len(tasks),
                 "Tasks": tasks,
-                # "image": [v.get("image")] * len(tasks),
+                "image": ["http://127.0.0.1:8000/" + v.get("image")] * len(tasks),
                 "Order": range(count + 1, count + len(tasks) + 1),
             }
         )
@@ -53,7 +53,11 @@ def create_bullet_journal_container(data):
             final_df = df
         else:
             final_df = pd.concat([final_df, df], ignore_index=True)
-    st.data_editor(final_df)
+    st.data_editor(
+        final_df,
+        column_config={"image": st.column_config.ImageColumn()},
+        hide_index=True,
+    )
 
 
 if uploaded_file is not None:
