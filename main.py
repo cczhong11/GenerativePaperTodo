@@ -40,15 +40,30 @@ def create_bullet_journal_container(data):
     for k, v in data.items():
         tasks = v.get("tasks")
         date = v.get("date")
+        img = v.get("image")
+        if isinstance(img, str):
+            img = img
+        if isinstance(img, list):
+            img = img[0]
         df = pd.DataFrame(
             {
                 "Date": [date] * len(tasks),
-                "Tasks": tasks,
-                "image": ["http://127.0.0.1:8000/" + v.get("image")] * len(tasks),
+                "Task": tasks,
+                "image": ["http://127.0.0.1:8000/" + img] * len(tasks),
                 "Order": range(count + 1, count + len(tasks) + 1),
             }
         )
         count += len(tasks)
+        # update image column
+        for i in range(len(tasks)):
+            task_str = tasks[i]
+            if "+" in task_str:
+                task = task_str.split("+")[0].strip()
+                img = task_str.split("+")[1].strip()
+                df.at[i, "Task"] = task
+                if os.path.exists("img/" + img):
+                    df.at[i, "image"] = "http://127.0.0.1:8000/img/" + img
+
         if final_df is None:
             final_df = df
         else:
@@ -74,12 +89,15 @@ def process_uploaded_file(uploaded_file):
         with open(f"{uiud}.jpeg", "wb") as f:
             f.write(bytes_data)
         st.success("File saved!")
-        output = give_me_text_from_graph(f"{uiud}.jpeg")
-        print(output)
-        output_json = json.loads(output)
+        output_json = give_me_text_from_graph(f"{uiud}.jpeg")
+        print(output_json)
+        # output_json = json.loads(output)
         output_json["image"] = f"{uiud}.jpeg"
         date = output_json.get("date")
-        old_data = data[date]
+        if date not in data:
+            old_data = {}
+        else:
+            old_data = data[date]
         new_data = output_json
         new_data = combine_to_json_gpt(old_data, new_data)
         data[date] = new_data

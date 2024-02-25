@@ -8,7 +8,9 @@ client = OpenAI()
 
 
 def get_json(data):
+    print(data)
     try:
+
         return json.loads(data)
     except:
         # find first {
